@@ -1,16 +1,128 @@
-library(likert)
-library(psych)
+---
+title: "Report on 07.01.2020 RForwards workshop, York, UK"
+author: "Emma Rand"
+date: "02/03/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+```{r pkg}
 library(tidyverse)
 library(readxl)
-library(gridExtra)
+library(likert)
+library(psych)
 library(patchwork)
+library(kableExtra)
+```
 
-# data file .gitignore
+
+```{r}
+file <- "../scholarship_applications.xlsx"
+expenses <- read_excel(file, sheet = "expenses_report")
 
 # import
 pre <- read_excel("pre-survey.xlsx") 
 post <- read_excel("post-survey.xlsx") 
 
+```
+
+
+# Practical detials 
+
+* Date: 07.01.2020
+* Time: 1030 - 1530
+* Location: Department of Biology, University of York, York, UK
+* People: Emma Rand and Susannah Cowtan
+
+# Funding
+
+Linux Foundation: scholarships for participants (travel, childcare, accomodation)
+Department of Biology University of York: £500 for lunch and refreshments and printing of signs
+
+# Description
+
+RForwards is the R Foundation taskforce on women and other under-represented groups and we are offering a free workshop designed for people who use R coding and want to learn more about creating impact from their code. It will cover package contribution and development thus addressing the skills gap that exists within the R and scientific coding community. For example, an analysis of CRAN package maintainers estimated that fewer than 15% were women, and a useR! participant survey found that women were less likely than men to have experience contributing to or writing packages. Whilst these data apply to women, underrepresented groups also include, but are not limited to, LGBTQ+ individuals, and people of colour.
+
+Workshop participants will learn to how to create, document and tests packages, use Git and GitHub.
+
+The workshop will be held on Tuesday 7th January at the University York from 1030 to 1530.
+Workshop application: https://rfoundation.limequery.com/494988?lang=en
+
+Participation is free and there is a scholarship program for travel within the UK, child care and other reasonable costs arising from attending the workshop. Scholarships are funded by the R Consortium and a link to the scholarship application form is presented at the end of the workshop application process. In addition, members of the Biochemical Society can apply for a general travel grant to attend the workshop.
+
+The deadline for workshop applications is midnight 1 January 2020.
+
+The deadline for Scholarship applications is midnight 10 November 2019 with applicants being informed of the outcome on Friday 22 November.
+
+# Advertising
+
+* Forwards website and twitter 
+* Biochemical Society website and twitter 
+* White Rose Doctoral Training partnership website
+* Software Sustainability Institute website and twitter
+* SheffieldR - R users group - talk
+* Rladies twitter
+* Rladies Newcastle mailing list and twitter 
+* Northern Bioinformatics User Group mailing list
+
+# Applicants
+
+There were 58 completed applications for the workshop of which: 1 person indicated they were not from an underrepresented group; 8 did not not respond to the confirmation email; 9 responded 'no' to the confirmation; and 40 confirmed their attendence.
+
+
+# Participants
+There were 40 attendents and 4 tutors. Emma Rand and Susannah Cowtan led the teaching, Tamora James and Sarah Lock acted as roving helpers.
+
+# Scholarships
+
+There were 17 completed applications of which 5 were outside the UK and not eligible (3 Kenya, 1 Nigeria, 1 Canada). They were given info on the RForwards listings and Rladies Global. £1299.95 was claimed.
+
+```{r}
+kable(expenses,
+      caption = "Expenses claimed and funded (GBP)") %>% 
+  kable_styling()
+```
+
+
+
+# Surveys
+
+Number of people completing pre-workshop survey: `r nrow(pre) `
+
+
+```{r}
+student <- pre %>% group_by(`Which of these best describes you? [Student]`) %>% 
+  filter(`Which of these best describes you? [Student]` == "Yes") %>% 
+  count()
+
+ecr <- pre %>% group_by(`Which of these best describes you? [Early career professional]`) %>% 
+  filter(`Which of these best describes you? [Early career professional]` == "Yes") %>% 
+  count()
+
+estab <- pre %>% group_by(`Which of these best describes you? [Established career professional]`) %>% 
+  filter(`Which of these best describes you? [Established career professional]` == "Yes") %>% 
+  count()
+
+```
+
+* Number of students: `r student$n`
+* Number of Early career professional: `r ecr$n`
+* Number of Established career professional: `r estab$n`
+
+Number of people completing post-workshop survey: `r nrow(post)`
+
+## Experience: pre and post
+
+Note: Participants were asked to download Git and create a Github account before attending.
+
+```{r prev-exp-prep}
 ####################################
 # columns about previous experience
 ###################################
@@ -80,7 +192,9 @@ presum <- likert(pre_exp)
 postsum <- likert(post_exp)
 
 order <- names(pre_exp)
+```
 
+```{r pre-exp-fig, fig.width = 10}
 a <- plot(presum,
           group.order = order,
           legend.position = "top",
@@ -100,7 +214,12 @@ b <- plot(postsum,
   theme(legend.position = "none")
 
 a / b
+```
 
+## Perceived difficulty: pre and post
+
+
+```{r diff-prep}
 ####################################
 # columns about difficulty
 ###################################
@@ -173,7 +292,10 @@ presum <- likert(pre_diff)
 postsum <- likert(post_diff)
 
 order <- names(pre_diff)
+```
 
+
+```{r diff-fig, fig.width=10}
 a <- plot(presum,
           group.order = order,
           legend.position = "top",
@@ -193,3 +315,5 @@ b <- plot(postsum,
   theme(legend.position = "none")
 
 a / b 
+```
+
